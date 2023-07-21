@@ -18,7 +18,7 @@ if list(map(int, fitz.VersionBind.split("."))) < [1, 19, 0]:
 
 # logging
 logging.basicConfig(
-    level=logging.INFO, 
+    level=logging.CRITICAL, 
     format="[%(levelname)s] %(message)s")
 
 
