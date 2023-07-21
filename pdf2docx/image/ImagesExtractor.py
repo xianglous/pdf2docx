@@ -330,10 +330,12 @@ class ImagesExtractor:
                 pix = temp
             
             # check dimension
-            if pix.width==mask.width and pix.height==mask.height:
-                pix = fitz.Pixmap(pix, mask)  # now compose final pixmap
-            else:
-                logging.warning('Ignore image due to inconsistent size of color and mask pixmaps: %s', item)
+            # if pix.width==mask.width and pix.height==mask.height:
+            if pix.size != mask.size:
+                mask = fitz.Pixmap(mask, pix.width, pix.height, (0, 0, pix.width, pix.height))
+            pix = fitz.Pixmap(pix, mask)  # now compose final pixmap
+            # else:
+            #     logging.warning('Ignore image due to inconsistent size of color and mask pixmaps: %s', item)
 
         # we may need to adjust something for CMYK pixmaps here -> 
         # recreate pixmap in RGB color space if necessary
