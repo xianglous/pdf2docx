@@ -22,3 +22,5 @@ build/
 dist/
 *egg-info/
 pdf2docx*.rst
+
+env/
