@@ -4,6 +4,7 @@
 '''
 
 from docx.shared import Pt
+from docx.table import _Cell
 from ..common.Element import Element
 from ..layout.Layout import Layout
 from ..common import docx
@@ -80,7 +81,7 @@ class Cell(Element, Layout):
         n_row, n_col = self.merged_cells
         i, j = indexes
         docx_cell = table.cell(i, j)
-        if n_row*n_col!=1:
+        if n_row*n_col!=1 and i+n_row < len(table.rows) and j+n_col < len(table.columns):
             _cell = table.cell(i+n_row-1, j+n_col-1)
             docx_cell.merge(_cell)
         
@@ -129,9 +130,10 @@ class Cell(Element, Layout):
             }
 
         # merged cells are assumed to have same borders with the main cell        
-        for m in range(i, i+n_row):
-            for n in range(j, j+n_col):
-                docx.set_cell_border(table.cell(m, n), **kwargs)        
+        for m in range(i, min(len(table.rows), i+n_row)):
+            for n in range(j, min(len(table.columns), j+n_col)):
+                docx.set_cell_border(table.cell(m, n), **kwargs)
+
 
         # ---------------------
         # cell bg-color
