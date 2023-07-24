@@ -125,13 +125,32 @@ class ImagesExtractor:
         images = []
         for group in groups:
             # clip page with the union bbox of all intersected images
-            if len(group) > 1:
-                clip_bbox = fitz.Rect()
-                for (bbox, item) in group: clip_bbox |= bbox
-                raw_dict = self.clip_page_to_dict(clip_bbox, clip_image_res_ratio)
+            # if len(group) > 1:
+            #     clip_bbox = fitz.Rect()
+            #     for (bbox, item) in group: clip_bbox |= bbox
+            #     raw_dict = self.clip_page_to_dict(clip_bbox, clip_image_res_ratio)
             
-            else:
-                bbox, item = group[0]
+            # else:
+            #     bbox, item = group[0]
+            #     # recover image
+            #     pix = self._recover_pixmap(doc, item)
+
+            #     # regarding images consist of alpha values only, i.e. colorspace is None,
+            #     # the turquoise color shown in the PDF is not part of the image, but part of PDF background.
+            #     # So, just to clip page pixmap according to the right bbox
+            #     # https://github.com/pymupdf/PyMuPDF/issues/677
+            #     alpha_only = not pix.colorspace
+            #     if alpha_only:
+            #         raw_dict = self.clip_page_to_dict(bbox, clip_image_res_ratio)
+                
+            #     # rotate image with opencv if page is rotated
+            #     else:
+            #         raw_dict = self._to_raw_dict(pix, bbox)
+            #         if rotation: 
+            #             raw_dict['image'] = self._rotate_image(pix, -rotation)
+
+            # images.append(raw_dict)
+            for bbox, item in group:
                 # recover image
                 pix = self._recover_pixmap(doc, item)
 
@@ -149,7 +168,7 @@ class ImagesExtractor:
                     if rotation: 
                         raw_dict['image'] = self._rotate_image(pix, -rotation)
 
-            images.append(raw_dict)
+                images.append(raw_dict)
 
         return images    
         

@@ -18,7 +18,7 @@ if list(map(int, fitz.VersionBind.split("."))) < [1, 19, 0]:
 
 # logging
 logging.basicConfig(
-    level=logging.CRITICAL, 
+    level=None, 
     format="[%(levelname)s] %(message)s")
 
 
@@ -137,7 +137,7 @@ class Converter:
             end (int, optional): Last page to process. Defaults to None, the last page.
             pages (list, optional): Range of page indexes to parse. Defaults to None.
         '''
-        logging.info(self._color_output('[1/4] Opening document...'))
+        # logging.info(self._color_output('[1/4] Opening document...'))
 
         # encrypted pdf ?
         if self._fitz_doc.needs_pass:
@@ -162,7 +162,7 @@ class Converter:
     def parse_document(self, **kwargs):
         '''Step 2 of converting process: analyze whole document, e.g. page section,
         header/footer and margin.'''
-        logging.info(self._color_output('[2/4] Analyzing document...'))
+        # logging.info(self._color_output('[2/4] Analyzing document...'))
         
         self._pages.parse(self.fitz_doc, **kwargs)
         return self
@@ -170,13 +170,13 @@ class Converter:
     
     def parse_pages(self, **kwargs):
         '''Step 3 of converting process: parse pages, e.g. paragraph, image and table.'''
-        logging.info(self._color_output('[3/4] Parsing pages...'))
+        # logging.info(self._color_output('[3/4] Parsing pages...'))
 
         pages = [page for page in self._pages if not page.skip_parsing]
         num_pages = len(pages)
         for i, page in enumerate(pages, start=1):
             pid = page.id + 1
-            logging.info('(%d/%d) Page %d', i, num_pages, pid)
+            # logging.info('(%d/%d) Page %d', i, num_pages, pid)
             try:
                 page.parse(**kwargs)
             except Exception as e:
@@ -195,7 +195,7 @@ class Converter:
             docx_filename (str, file-like): docx file to write.
             kwargs (dict, optional): Configuration parameters. 
         '''
-        logging.info(self._color_output('[4/4] Creating pages...'))
+        # logging.info(self._color_output('[4/4] Creating pages...'))
 
         # check parsed pages
         parsed_pages = list(filter(
@@ -223,7 +223,7 @@ class Converter:
         for i, page in enumerate(parsed_pages, start=1):
             if not page.finalized: continue # ignore unparsed pages
             pid = page.id + 1
-            logging.info('(%d/%d) Page %d', i, num_pages, pid)
+            # logging.info('(%d/%d) Page %d', i, num_pages, pid)
             try:
                 page.make_docx(docx_file)
             except Exception as e:
@@ -336,7 +336,7 @@ class Converter:
             Multi-processing works only for continuous pages specified by ``start`` and ``end`` only.
         """
         t0 = perf_counter()
-        logging.info('Start to convert %s', self.filename_pdf)
+        # logging.info('Start to convert %s', self.filename_pdf)
         settings = self.default_settings
         settings.update(kwargs)
 
@@ -351,7 +351,7 @@ class Converter:
         else:
             self.parse(start, end, pages, **settings).make_docx(docx_filename, **settings)
 
-        logging.info('Terminated in %.2fs.', perf_counter()-t0)        
+        # logging.info('Terminated in %.2fs.', perf_counter()-t0)        
 
 
     def extract_tables(self, start:int=0, end:int=None, pages:list=None, **kwargs):
