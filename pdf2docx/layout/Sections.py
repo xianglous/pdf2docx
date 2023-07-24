@@ -80,6 +80,8 @@ class Sections(BaseCollection):
         # ---------------------------------------------------
         # lazy: assign all float images to first paragraph of current page
         for image in self.parent.float_images:
+            if n == len(doc.paragraphs):
+                doc.add_paragraph()
             image.make_docx(doc.paragraphs[n])
 
 
